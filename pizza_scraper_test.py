@@ -1,28 +1,11 @@
 from selenium import webdriver
-from selenium.webdriver.edge.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 
-# Path to your Edge WebDriver (adjust the path as necessary)
-driver_path = 'C:/Users/ncare/edgedriver_win64/msedgedriver.exe'
 
-# Initialize the web driver
-service = Service(driver_path)
-options = webdriver.EdgeOptions()
-options.add_argument('--headless')  # Run in headless mode for efficiency
-driver = webdriver.Edge(service=service, options=options)
+driver = webdriver.Edge()
 
-# URL of the website to scrape
-url = 'https://onebite.app/reviews/dave?page='
-
-# Open the URL using Selenium
-driver.get(url+str(1))
-
-# Allow some time for the JavaScript to load
-import time
-time.sleep(5)
+driver.get("https://onebite.app/reviews/dave")
 
 # Lists to store the scraped data
 names = []
@@ -55,33 +38,27 @@ def scrape_page():
                 locations.append(location)
                 scores.append(score)
 
-                print(f"Extracted: {name}, {timestamp}, {location}, {score}")
+                print(f"Extracted: {name}, {timestamp}, {location}")
             except Exception as e:
                 print(f"Error extracting data: {e}")
                 print(card.get_attribute('innerHTML'))  # Print the inner HTML of the problematic element for debugging
     except Exception as e:
         print(f"Error finding review cards: {e}")
 
+scrape_page()
 
-for i in range(59):
-    driver.get(url + str(i))
-    driver.implicitly_wait(3)
-
-    scrape_page()
-
-    
 # Close the web driver
 driver.quit()
 
 # Create a DataFrame to store the scraped data
 data = pd.DataFrame({
     'Name': names,
-    'Date': timestamps,
+    'Timestamp': timestamps,
     'Location': locations,
-    'Score:': scores
+    'Score': scores
 })
 
 # Save the data to a CSV file
-data.to_csv('scraped_data_final.csv', index=False)
+data.to_csv('scraped_data_test.csv', index=False)
 
 print("Scraping completed and data saved to 'scraped_data.csv'")
