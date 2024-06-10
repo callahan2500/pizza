@@ -3,11 +3,13 @@ import requests
 import googlemaps
 import os
 
+
+api_key = os.environ.get("GOOGLE_MAP_API_KEY")
 # Load your CSV
 df = pd.read_csv("C:/Users/ncare/pizza/scraped_data_may24.csv")
 
 # Initialize Google Maps API client
-gmaps = googlemaps.Client(key='AIzaSyBcuiVgenZhGFnf6HdxiGuOjZJzykJeQHM')
+gmaps = googlemaps.Client(key=api_key)
 
 # Function to get the address
 def get_address(name, city, state):
